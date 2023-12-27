@@ -1,0 +1,30 @@
+import jwt
+import datetime
+
+# The following values should be changed based on your Box application and settings
+app_config = {
+    'boxAppSettings': {
+        'clientID': 'YOUR_CLIENT_ID',
+        'clientSecret': 'YOUR_CLIENT_SECRET',
+        'appAuth': {
+            'publicKeyID': 'YOUR_PUBLIC_KEY_ID',
+            'privateKey': 'YOUR_PRIVATE_KEY',
+            'passphrase': 'YOUR_PRIVATE_KEY_PASSPHRASE'
+        }
+    }
+}
+
+# Define the JWT claims
+claims = {
+    'iss': app_config['boxAppSettings']['clientID'],
+    'sub': app_config['boxAppSettings']['clientID'],
+    'box_sub_type': 'enterprise',
+    'aud': 'https://api.box.com/oauth2/token',
+    'exp': int((datetime.datetime.utcnow() + datetime.timedelta(seconds=60)).timestamp()),
+    'jti': jwt.utils.get_random_string(64)
+}
+
+# Generate the JWT
+jwt_token = jwt.encode(claims, app_config['boxAppSettings']['appAuth']['privateKey'], algorithm='RS256', headers={'kid': app_config['boxAppSettings']['appAuth']['publicKeyID']})
+
+print('Generated JWT: ', jwt_token)
