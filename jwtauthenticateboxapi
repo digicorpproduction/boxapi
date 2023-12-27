@@ -1,0 +1,16 @@
+import requests
+
+# Define the JWT payload
+jwt_payload = {
+    'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+    'assertion': jwt_token,
+    'box_subject_type': 'enterprise'
+}
+
+# Authenticate with the Box API and renew the certificate
+response = requests.post('https://api.box.com/oauth2/token', data=jwt_payload)
+
+if response.status_code == 200:
+    print('Certificate renewed successfully')
+else:
+    print('Error renewing certificate: ', response.text)
